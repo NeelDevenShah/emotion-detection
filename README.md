@@ -1,4 +1,5 @@
 # Emotion Recognition System
+
 Created a machine learning model that can recognize human emotions from facial
 expressions. Use image processing and deep learning techniques to train the model
 on labeled emotion datasets.
@@ -16,12 +17,16 @@ empathetic AI systems, fostering emotional connections, and promoting overall
 well-being in our increasingly digital world.
 
 # Expected Outcomes-
+
 The expected outcomes of the project include:
+
 1. Development of an emotion recognition model capable of accurately
-classifying human emotions based on the preprocessed data.
+   classifying human emotions based on the preprocessed data.
 2. Evaluation of the model's performance using appropriate metrics such as
-accuracy, precision.
+   accuracy, precision.
 3. Documentation of the project, including details of data preprocessing,
-algorithm selection, and model development process.
+   algorithm selection, and model development process.
 
 Dataset link: https://www.kaggle.com/datasets/dejolilandry/iemocapfullrelease
+
+Contact Me at `neeldevenshah@gmail.com`
