@@ -4,23 +4,41 @@ import pandas as pd
 from config import model_config as config
 
 from sklearn.metrics import confusion_matrix, accuracy_score, f1_score, precision_score, recall_score
+
 import itertools
 import matplotlib.pyplot as plt
 
 
-def load_data(batched=True, test=False, file_dir='../../address/'):
+def load_data(batched=True, test=False, file_dir='../../../preprocessed/'):
     bs = config['batch_size']
     ftype = 'test' if test else 'train'
-    df = pd.read_csv('{}modified_df_{}.csv'.format(file_dir, ftype))
-
+    df = pd.read_csv('{}audio_{}.csv'.format(file_dir, ftype))
     # 0th index in label, rest all are features
-    data = (np.array(df[df.columns[1:]]), np.array(df[df.columns[0]]))
+
+    data = (np.array(df[df.columns[1]]), np.array(df[df.columns[2:]]))
+
     if test or not batched:
-        return [torch.FloatTensor(data[0]), torch.LongTensor(data[1])]
+        # Extract column 1 as a NumPy array and convert to float
+        data_0 = df[df.columns[1]].values.astype(float)
+        # Extract columns 2 onwards as a NumPy array and convert to int
+        data_1 = df[df.columns[2:]].values.astype(int)
+
+        # Convert the NumPy arrays to PyTorch tensors
+        tensor_0 = torch.FloatTensor(data_0)
+        tensor_1 = torch.LongTensor(data_1)
+
+        # Return the converted tensors as a list
+        return [(tensor_0, tensor_1)]
     data = list(zip(data[0], data[1]))
+
+    # ORIGINAL IS THIS ONE, BUT DUE TO LESS DATA OTHER ONE IS USED
+    # n_iters = len(data) // bs
     n_iters = len(data)
+
     batches = []
+
     for i in range(1, n_iters + 1):
+
         input_batch = []
         output_batch = []
         for e in data[bs * (i-1):bs * i]:

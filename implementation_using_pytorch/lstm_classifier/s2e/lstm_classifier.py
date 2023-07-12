@@ -15,16 +15,16 @@ class LSTMClassifier(nn.Module):
     def __init__(self, config):
         super().__init__()
         self.n_layers = config['n_layers']
-        self.input_dim = config['input_dim']
-        self.hidden_dim = config['hidden_dim']
-        self.output_dim = config['output_dim']
+        self.input_dim = config['input_dims']
+        self.hidden_dim = config['hidden_dims']
+        self.output_dim = config['output_dims']
         self.bidirectional = config['bidirectional']
         self.dropout = config['dropout'] if self.n_layers > 1 else 0
 
         self.rnn = nn.LSTM(self.input_dim, self.hidden_dim, bias=True,
-                           num_layers=2, droupot=self.dropout, bidirectional=self.bidirectional)
+                           num_layers=2, dropout=self.dropout, bidirectional=self.bidirectional)
         self.out = nn.Linear(self.hidden_dim, self.output_dim)
-        self.softmax = F.softmax()
+        self.softmax = F.softmax
 
     def forward(self, input_seq):
         # input_seq = [1, batch_size, input_size]
@@ -51,20 +51,23 @@ if __name__ == '__main__':
     test_pairs = load_data(test=True)
 
     best_acc = 0
-    for epoch in range(config['n_epoch']):
+    for epoch in range(config['n_epochs']):
         losses = []
         for batch in train_batches:
-            inputs = batch[0].unsqueeze(0)
-            targets = batch[1]
-            inputs = inputs.to(device)
-            targets = targets.to(device)
+            inputs = batch[1].unsqueeze(0)
+            targets = batch[0]
+            inputs = inputs.to(torch.float32)
+            targets = targets.to(torch.float32)
 
-            # zero_grad() function is used to clear the gradients of all parameters in a model, and it's often called before running the backward() function during training
+            # zero_grad() function is used to clear the gradients of all parameters in a model, and it's often called before running the backward() function d uring training
             model.zero_grad()
             optimizer.zero_grad()
 
             predictions = model(inputs)
-            predictions = predictions.to(device)
+
+            print(predictions)
+
+            predictions = predictions.to(torch.float32)
 
             loss = criterion(predictions, targets)
             # The backward() method in Pytorch is used to calculate the gradient during the backward pass in the neural network. If we do not call this backward() method then gradients are not calculated for the tensors. The gradient of a tensor is calculated for the one having requires_grad is set to True.
@@ -75,11 +78,11 @@ if __name__ == '__main__':
         # evaluate
         # Disabling gradient calculation is useful for inference, when you are sure that you will not call Tensor.backward(). It will reduce memory consumption for computations that would otherwise have requires_grad=True.
         with torch.no_grad():
-            inputs = test_pairs[0].unsqueeze()
+            inputs = test_pairs[0]
             targets = test_pairs[1]
 
-            inputs = inputs.to(device)
-        targets = targets.to(device)
+            inputs = inputs
+        targets = targets
 
         # take argmax to get class id
         # Torch.argmax() method accepts a tensor and returns the indices of the maximum values of the input tensor across a specified dimension/axis.
@@ -103,5 +106,5 @@ if __name__ == '__main__':
                 'optimizer': optimizer.state_dict()
             }, 'runs/{}-best_model.pth'.format(config['model_code']))
         # A file with a . pth extension typically contains a serialized PyTorch state dictionary. A PyTorch state dictionary is a Python dictionary that contains the state of a PyTorch model, including the model's weights, biases, and other parameters.
-            with open('results/{}-best_performance.pkl'.format(config['model_code']), 'wb') as f:
+            with open('/../../results/{}-best_performance.pkl'.format(config['model_code']), 'wb') as f:
                 pickle.dump(performance, f)
