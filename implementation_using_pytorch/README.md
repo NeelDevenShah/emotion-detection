@@ -1,3 +1,6 @@
+# NOT COMPLETED `LSTM Part, Refer to the classifier part` DUE TO MULTIPLE ERROR
+
+
 # Multimodal Transformer With Learnable Frontend and Self Attention for Emotion Recognition
 
 This repo contains the code for detecting emotion from the conversational dataset IEMOCAP for the implementation of the paper "Multimodal Transformer With Learnable Frontend and Self Attention for Emotion Recognition" submitted to ICASSP 2022. This repository contains the code when Session 5 is conisdered as test and Session 1 as validation.
